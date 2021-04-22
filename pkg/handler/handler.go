@@ -1,13 +1,16 @@
 package handler
 
-import "github.com/labstack/echo"
+import (
+	"github.com/bogdanserdinov/tic-tac-toe-web/pkg/service"
+	"github.com/labstack/echo"
+)
 
 type Handler struct{
-
+	service *service.Service
 }
 
-func NewHandler() *Handler{
-	return &Handler{}
+func NewHandler(service *service.Service) *Handler{
+	return &Handler{service: service}
 }
 
 func (h *Handler) InitRoutes() *echo.Echo{
