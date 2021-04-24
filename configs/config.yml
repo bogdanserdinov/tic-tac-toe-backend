@@ -2,5 +2,4 @@ port: "8080"
 
 db:
   name: "root"
-  dbname : "tic_tac_toe"
   password: "pass"

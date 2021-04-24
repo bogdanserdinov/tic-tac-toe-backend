@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -18,8 +19,9 @@ type Config struct {
 	DBName   string
 }
 
-func InitDB(conf Config) (*sql.DB, error) {
+func InitMySQL(conf Config) (*sql.DB, error) {
 	configuration := fmt.Sprintf("%s:%s@/%s", conf.Username, conf.Password, conf.DBName)
+	fmt.Println(configuration)
 	db, err := sql.Open("mysql", configuration)
 	if err != nil {
 		return nil, err
