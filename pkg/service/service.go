@@ -1,10 +1,13 @@
 package service
 
-import "github.com/bogdanserdinov/tic-tac-toe-web/pkg/repository"
+import (
+	"github.com/bogdanserdinov/tic-tac-toe-web"
+	"github.com/bogdanserdinov/tic-tac-toe-web/pkg/repository"
+)
 
 type Authorization interface {
-	SignIn()
-	SignUp()
+	SignIn(user tictactoe_web.User) (int,error)
+	//SignUp(user tictactoe_web.User) (int,error)
 }
 
 type Service struct {
@@ -12,5 +15,7 @@ type Service struct {
 }
 
 func NewService(repository *repository.Repository) *Service{
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repository),
+	}
 }
