@@ -1,10 +1,12 @@
 package repository
 
-import "database/sql"
+import (
+	"database/sql"
+	tictactoe_web "github.com/bogdanserdinov/tic-tac-toe-web"
+)
 
 type Authorization interface {
-	SignIn()
-	SignUp()
+	CreateUser(user tictactoe_web.User) (int,error)
 }
 
 type Repository struct {
@@ -12,5 +14,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sql.DB) *Repository{
-	return &Repository{}
+	return &Repository{
+		Authorization : NewAuthRepository(db),
+	}
 }

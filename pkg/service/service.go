@@ -6,7 +6,7 @@ import (
 )
 
 type Authorization interface {
-	SignIn(user tictactoe_web.User) (int,error)
+	CreateUser(user tictactoe_web.User) (int,error)
 	//SignUp(user tictactoe_web.User) (int,error)
 }
 
