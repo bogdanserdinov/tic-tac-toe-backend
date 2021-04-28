@@ -36,7 +36,7 @@ func main() {
 	handle := handler.NewHandler(ser) //struct, but method InitRoutes == http.Handler
 
 	server := new(tictactoe_web.Server)
-	if err := server.Run(viper.GetString("port"), handle.InitRoutes()); err != nil {
+	if err = server.Run(viper.GetString("port"), handle.InitRoutes()); err != nil {
 		logrus.Fatalf("error occurred while running http server: %s", err.Error())
 	}
 }

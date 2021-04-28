@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	User      = "user"
-	UserStats = "userstats"
-	Game      = "game"
-	GameStats = "gamestats"
+	UserTable      = "user"
+	UserStatsTable = "userstats"
+	GameTable      = "game"
+	GameStatsTable = "gamestats"
 )
 
 type Config struct {
