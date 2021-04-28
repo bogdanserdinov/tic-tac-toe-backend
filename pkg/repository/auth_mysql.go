@@ -28,16 +28,16 @@ func(r *AuthRepository) CreateUser(user tictactoe_web.User) (int,error){
 	result, err := r.db.Exec(query, user.Name,user.Password)
 
 	if err != nil{
-		logrus.Fatalf("could not get id of inserted row: %s",err.Error())
+		logrus.Fatalf( "could not get id of inserted row: %s",err.Error())
 		return 0,err
 	}
 	id,_ = result.LastInsertId()
 	return int(id),nil
 }
 
-func(r *AuthRepository) GetUser(name string, password []byte) (tictactoe_web.User,error){
+func(r *AuthRepository) GetUser(name string, password string) (tictactoe_web.User,error){
 	var u tictactoe_web.User
-	query := fmt.Sprintf("Select * from %s where name=$1 and password=$2",UserTable)
+	query := fmt.Sprintf("Select * from %s where name=? and password=?",UserTable)
 
 	row := r.db.QueryRow(query,name,password)
 
