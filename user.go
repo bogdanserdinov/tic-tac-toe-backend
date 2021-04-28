@@ -1,10 +1,10 @@
 package tictactoe_web
 
 type User struct {
-	ID       int
-	Name     string
-	Password []byte
-	Role     string
+	ID       int    `json:"ID"`
+	Name     string `json:"Name" validate:"required"`
+	Password string `json:"Password" validate:"required"`
+	Role     string `json:"Role"`
 }
 
 type UserStats struct {

@@ -23,10 +23,10 @@ func(a *AuthService) CreateUser(user tictactoe_web.User) (int,error){
 }
 
 
-func (a *AuthService) HashPassword(password []byte) []byte{
-	hashedPassword,err := bcrypt.GenerateFromPassword(password,bcrypt.DefaultCost)
+func (a *AuthService) HashPassword(password string) string{
+	hashedPassword,err := bcrypt.GenerateFromPassword([]byte(password),bcrypt.DefaultCost)
 	if err != nil{
 		logrus.Errorf("could not bcrypt password: %s",err.Error())
 	}
-	return hashedPassword
+	return string(hashedPassword)
 }

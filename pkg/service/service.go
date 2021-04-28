@@ -7,7 +7,6 @@ import (
 
 type Authorization interface {
 	CreateUser(user tictactoe_web.User) (int,error)
-	//SignUp(user tictactoe_web.User) (int,error)
 }
 
 type Service struct {

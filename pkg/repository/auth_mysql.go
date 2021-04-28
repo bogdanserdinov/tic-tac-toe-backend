@@ -19,15 +19,19 @@ func NewAuthRepository(db *sql.DB) *AuthRepository{
 }
 
 func(r *AuthRepository) CreateUser(user tictactoe_web.User) (int,error){
-	query := fmt.Sprintf("Insert into %s (name,password) values ($1,$2)",UserTable)
+	if r.db == nil{
+		logrus.Fatalf("db = nil")
+	}
+	var id int64
+	query := fmt.Sprintf("Insert into %s (name,password) values (?,?)",UserTable)
 
 	result, err := r.db.Exec(query, user.Name,user.Password)
+
 	if err != nil{
-		return 0,nil
+		logrus.Fatalf("could not get id of inserted row: %s",err.Error())
+		return 0,err
 	}
-
-	id, _ :=  result.LastInsertId()
-
+	id,_ = result.LastInsertId()
 	return int(id),nil
 }
 
