@@ -36,6 +36,7 @@ func (a *AuthService) GenerateToken(name, password string) (string, error) {
 		logrus.Errorf("could not get user: %s", err.Error())
 		return "", err
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(12*time.Hour).Unix(),

@@ -34,11 +34,12 @@ func(h *Handler) signIn(c echo.Context) error{
 		return c.String(http.StatusBadRequest,"could not bind struct")
 	}
 
-	token,err := h.service.Authorization.GenerateToken(user)
+	token,err := h.service.Authorization.GenerateToken(user.Name,user.Password)
 	if err != nil{
 		logrus.Errorf("could not parse token: %s",err.Error())
 		return c.String(http.StatusInternalServerError,"could not parse token")
 	}
 
-	return c.String(http.StatusOK,token)
+	out := fmt.Sprintf("token : %s",token)
+	return c.String(http.StatusOK,out)
 }
