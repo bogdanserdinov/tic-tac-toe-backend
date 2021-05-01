@@ -48,6 +48,10 @@ func (a *AuthService) GenerateToken(name, password string) (string, error) {
 	return token.SignedString([]byte(os.Getenv("SIGNING_KEY")))
 }
 
+func (a *AuthService) ParseToken(accessToke string) (int,error){
+	return 0,nil
+}
+
 func HashPassword(password string) string {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {

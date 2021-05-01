@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/bogdanserdinov/tic-tac-toe-web"
 	_ "github.com/go-sql-driver/mysql"
@@ -42,6 +43,12 @@ func(r *AuthRepository) GetUser(name string, password string) (tictactoe_web.Use
 	rows,err := r.db.Query(query,name,password)
 	if err != nil {
 		logrus.Errorf("unsuccesful query to db: %s",err.Error())
+		return tictactoe_web.User{},err
+	}
+	if rows == nil {
+		logrus.Error("nil query to db")
+		err1 := errors.New("query to db return nil")
+		return tictactoe_web.User{},err1
 	}
 
 	for rows.Next(){
