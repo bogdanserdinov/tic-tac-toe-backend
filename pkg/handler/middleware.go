@@ -7,32 +7,35 @@ import (
 	"strings"
 )
 
-func (h *Handler) checkUser(c echo.Context) error {
-	header := c.Request().Header.Get("Authorization")
-	if header == "" {
+func (h *Handler) CheckUser(c echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error{
+		header := c.Request().Header.Get("Authorization")
+		if header == "" {
 		return c.String(http.StatusUnauthorized, "empty auth header")
 	}
 
-	headerPath := strings.Split(header, " ")
+		headerPath := strings.Split(header, " ")
 
-	if len(headerPath) != 2 || headerPath[0] != "Bearer" {
+		if len(headerPath) != 2 || headerPath[0] != "Bearer" {
 		return c.String(http.StatusUnauthorized, "invalid auth header")
 	}
 
-	if len(headerPath[1]) == 0 {
+		if len(headerPath[1]) == 0 {
 		return c.String(http.StatusUnauthorized, "token is empty")
 	}
 
-	userId, err := h.service.Authorization.ParseToken(headerPath[1])
-	if err != nil {
+		userId, err := h.service.Authorization.ParseToken(headerPath[1])
+		if err != nil {
 		return c.String(http.StatusUnauthorized, "invalid token")
 	}
 
-	c.Set("userId", userId)
-	return nil
+		c.Set("userId", userId)
+		return nil
+	}
+
 }
 
-func (h *Handler) getUser(c echo.Context) (int, error) {
+func (h *Handler) GetUser(c echo.Context) (int, error) {
 	id := c.Get("userId")
 
 	idInt, ok := id.(int)
