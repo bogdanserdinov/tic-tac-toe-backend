@@ -8,7 +8,7 @@ import (
 type Authorization interface {
 	CreateUser(user tictactoe_web.User) (int,error)
 	GenerateToken(name, password string) (string, error)
-	ParseToken(accessToke string) (int,error)
+	ParseToken(accessToken string) (int, error)
 }
 
 type Service struct {

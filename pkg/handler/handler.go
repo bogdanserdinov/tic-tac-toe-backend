@@ -20,10 +20,10 @@ func (h *Handler) InitRoutes() *echo.Echo{
 	auth.POST("/sign-in",h.signIn)
 	auth.POST("/sign-up",h.signUp)
 
-	//api := e.Group("/api",h.CheckUser)
+	api := e.Group("/api",h.CheckUser)
 
-	//stats := api.Group("/profile")
-	//stats.GET("/profile",)
+	stats := api.Group("/profile")
+	stats.GET("/",h.GetStats)
 	//stats.POST("/profile",)
 
 	//bot := api.Group("/bot")

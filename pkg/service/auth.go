@@ -1,12 +1,13 @@
 package service
 
 import (
+	"crypto/sha1"
 	"errors"
+	"fmt"
 	"github.com/bogdanserdinov/tic-tac-toe-web"
 	"github.com/bogdanserdinov/tic-tac-toe-web/pkg/repository"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"time"
 )
@@ -37,6 +38,7 @@ func (a *AuthService) GenerateToken(name, password string) (string, error) {
 		logrus.Errorf("could not get user: %s", err.Error())
 		return "", err
 	}
+	fmt.Println(user)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
@@ -50,27 +52,30 @@ func (a *AuthService) GenerateToken(name, password string) (string, error) {
 }
 
 func (a *AuthService) ParseToken(accessToken string) (int, error) {
+	fmt.Println(os.Getenv("SIGNING_KEY"))
 	token,err := jwt.ParseWithClaims(accessToken,&tokenClaims{},func(token *jwt.Token) (interface{},error){
 		if _,ok := token.Method.(*jwt.SigningMethodHMAC); !ok{
-			return 0, errors.New("invalid signing method")
+			return nil, errors.New("invalid signing method")
 		}
 		return []byte(os.Getenv("SIGNING_KEY")),nil
 	})
 	if err != nil {
 		return 0,err
 	}
+
 	claims,ok := token.Claims.(*tokenClaims)
-	if  !ok || !token.Valid {
-		return 0,errors.New("invalid token")
+	if  !ok {
+		return 0,errors.New("token claims are not tokenClaims type")
 	}
 
 	return claims.UserID, nil
 }
 
 func HashPassword(password string) string {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		logrus.Errorf("could not bcrypt password: %s", err.Error())
-	}
-	return string(hashedPassword)
+	hash := sha1.New()
+	hash.Write([]byte(password))
+
+	return fmt.Sprintf("%x", hash.Sum([]byte(os.Getenv("SALT"))))
 }
+
+

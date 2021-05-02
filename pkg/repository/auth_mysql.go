@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/bogdanserdinov/tic-tac-toe-web"
 	_ "github.com/go-sql-driver/mysql"
@@ -39,26 +38,14 @@ func(r *AuthRepository) CreateUser(user tictactoe_web.User) (int,error){
 func(r *AuthRepository) GetUser(name string, password string) (tictactoe_web.User,error){
 	var u tictactoe_web.User
 	query := fmt.Sprintf("Select * from %s where name=? and password=?",UserTable)
+	fmt.Println(name,password)
+	rows:= r.db.QueryRow(query,name,password)
 
-	rows,err := r.db.Query(query,name,password)
+	err := rows.Scan(&u.ID, &u.Name, &u.Password, &u.Role)
 	if err != nil {
-		logrus.Errorf("unsuccesful query to db: %s",err.Error())
-		return tictactoe_web.User{},err
+		logrus.Errorf("could not get row from db: %s",err.Error())
 	}
-	if rows == nil {
-		logrus.Error("nil query to db")
-		err1 := errors.New("query to db return nil")
-		return tictactoe_web.User{},err1
-	}
-
-	for rows.Next(){
-		err = rows.Scan(&u.ID, &u.Name, &u.Password, &u.Role)
-		fmt.Println(u)
-		if err != nil{
-			logrus.Errorf("could not get data from db: %s",err.Error())
-			return tictactoe_web.User{},err
-		}
-	}
+	fmt.Println(u)
 
 	return u,nil
 }

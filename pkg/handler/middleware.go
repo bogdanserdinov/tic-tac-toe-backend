@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (h *Handler) CheckUser(c echo.HandlerFunc) echo.HandlerFunc {
+func (h *Handler) CheckUser(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error{
 		header := c.Request().Header.Get("Authorization")
 		if header == "" {
@@ -32,7 +32,6 @@ func (h *Handler) CheckUser(c echo.HandlerFunc) echo.HandlerFunc {
 		c.Set("userId", userId)
 		return nil
 	}
-
 }
 
 func (h *Handler) GetUser(c echo.Context) (int, error) {
