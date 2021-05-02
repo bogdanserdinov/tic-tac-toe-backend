@@ -13,8 +13,8 @@ import (
 )
 
 type tokenClaims struct {
-	jwt.Claims
-	UserID int
+	jwt.StandardClaims
+	UserID int	`json:"id"`
 }
 
 type AuthService struct {
@@ -38,8 +38,6 @@ func (a *AuthService) GenerateToken(name, password string) (string, error) {
 		logrus.Errorf("could not get user: %s", err.Error())
 		return "", err
 	}
-	fmt.Println(user)
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
@@ -52,20 +50,20 @@ func (a *AuthService) GenerateToken(name, password string) (string, error) {
 }
 
 func (a *AuthService) ParseToken(accessToken string) (int, error) {
-	fmt.Println(os.Getenv("SIGNING_KEY"))
-	token,err := jwt.ParseWithClaims(accessToken,&tokenClaims{},func(token *jwt.Token) (interface{},error){
-		if _,ok := token.Method.(*jwt.SigningMethodHMAC); !ok{
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
-		return []byte(os.Getenv("SIGNING_KEY")),nil
+
+		return []byte(os.Getenv("SIGNING_KEY")), nil
 	})
 	if err != nil {
-		return 0,err
+		return 0, err
 	}
 
-	claims,ok := token.Claims.(*tokenClaims)
-	if  !ok {
-		return 0,errors.New("token claims are not tokenClaims type")
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return 0, errors.New("token claims are not of type *tokenClaims")
 	}
 
 	return claims.UserID, nil
