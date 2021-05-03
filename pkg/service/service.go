@@ -11,6 +11,7 @@ type Authorization interface {
 	ParseToken(accessToken string) (int, error)
 }
 
+
 type Service struct {
 	Authorization
 }
