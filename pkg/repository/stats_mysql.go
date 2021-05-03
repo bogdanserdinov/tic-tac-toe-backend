@@ -64,5 +64,4 @@ func (s *StatsRepository) UpdateStats(newStats tictactoe_web.UserStats) (tictact
 		return tictactoe_web.UserStats{}, err
 	}
 	return newStats, nil
-
 }
