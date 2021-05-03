@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"fmt"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func (h *Handler) GetStats(c echo.Context) error{
+func (h *Handler) GetStats(c *gin.Context){
 	id,err := GetUserId(c)
-	fmt.Println("dbsjkfk")
 	if err != nil {
-		return c.String(http.StatusInternalServerError,"could not get user id")
+		c.String(http.StatusInternalServerError,"could not get user id")
+		return
 	}
-	res := fmt.Sprintf("id : %d",id)
-	return c.String(http.StatusOK,res)
+	c.JSON(http.StatusOK,gin.H{
+		"id" : id,
+	})
 }

@@ -2,37 +2,44 @@ package handler
 
 import (
 	"github.com/bogdanserdinov/tic-tac-toe-web/pkg/service"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 )
 
-type Handler struct{
+type Handler struct {
 	service *service.Service
 }
 
-func NewHandler(service *service.Service) *Handler{
+func NewHandler(service *service.Service) *Handler {
 	return &Handler{service: service}
 }
 
-func (h *Handler) InitRoutes() *echo.Echo{
-	e := echo.New()
+func (h *Handler) InitRoutes() *gin.Engine {
+	router := gin.Default()
 
-	auth := e.Group("/auth")
-	auth.POST("/sign-in",h.signIn)
-	auth.POST("/sign-up",h.signUp)
+	auth := router.Group("/auth")
+	auth.POST("/sign-in", h.signIn)
+	auth.POST("/sign-up", h.signUp)
 
-	api := e.Group("/api")
-	api.Use(h.CheckUser)
+	api := router.Group("/api", h.CheckUser)
+	{
 
-	stats := api.Group("/profile")
-	stats.GET("/",h.GetStats)
-	//stats.POST("/profile",)
+		stats := api.Group("/profile")
+		{
+			stats.GET("", h.GetStats)
+			//stats.POST("/profile",)
+		}
 
-	//bot := api.Group("/bot")
-	//bot.POST("/bot")
+		//bot := api.Group("/bot")
+		//{
+		//bot.POST("/bot")
+		//}
 
-	//game := api.Group("/game")
-	//game.GET("/game")
-	//game.POST("/game")
+		//game := api.Group("/game")
+		//{
+		//game.GET("/game")
+		//game.POST("/game")
+		//}
 
-	return e
+	}
+	return router
 }

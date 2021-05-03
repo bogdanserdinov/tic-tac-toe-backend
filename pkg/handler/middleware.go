@@ -3,53 +3,53 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"github.com/labstack/echo"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
 )
 
 const userCtx = "userId"
 
+func (h *Handler) CheckUser(c *gin.Context) {
 
-func (h *Handler) CheckUser(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error{
+	header := c.GetHeader("Authorization")
 
-		header := c.Request().Header.Get("Authorization")
-
-		if header == "" {
-		return c.String(http.StatusUnauthorized, "empty auth header")
-		}
-
-		headerPath := strings.Split(header, " ")
-
-		if len(headerPath) != 2 || headerPath[0] != "Bearer" {
-		return c.String(http.StatusUnauthorized, "invalid auth header")
+	if header == "" {
+		c.String(http.StatusUnauthorized, "empty auth header")
+		return
 	}
 
-		if len(headerPath[1]) == 0 {
-		return c.String(http.StatusUnauthorized, "token is empty")
+	headerPath := strings.Split(header, " ")
+
+	if len(headerPath) != 2 || headerPath[0] != "Bearer" {
+		c.String(http.StatusUnauthorized, "invalid auth header")
+		return
 	}
 
-		userId, err := h.service.Authorization.ParseToken(headerPath[1])
-		if err != nil {
-			message := fmt.Sprintf("invalid token: %s",err.Error())
-			return c.String(http.StatusUnauthorized,message )
-		}
-
-		c.Set(userCtx, userId)
-		return nil
+	if len(headerPath[1]) == 0 {
+		c.String(http.StatusUnauthorized, "token is empty")
+		return
 	}
+
+	userId, err := h.service.Authorization.ParseToken(headerPath[1])
+	if err != nil {
+		message := fmt.Sprintf("invalid token: %s", err.Error())
+		c.String(http.StatusUnauthorized, message)
+		return
+	}
+
+	c.Set(userCtx, userId)
+
 }
 
-func GetUserId(c echo.Context) (int,error){
-		id := c.Get(userCtx)
-
-		idInt, ok := id.(int)
-		if !ok {
-			return 0, errors.New("invalid type of id")
-		}
-		fmt.Println(id)
-		fmt.Println("asfknsadflsan")
-		return idInt, nil
+func GetUserId(c *gin.Context) (int, error) {
+	id, ok := c.Get(userCtx)
+	if !ok {
+		return 0, errors.New("no user id in context")
 	}
-
+	idInt, ok := id.(int)
+	if !ok {
+		return 0, errors.New("invalid type of id")
+	}
+	return idInt, nil
+}
