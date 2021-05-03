@@ -6,12 +6,14 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user tictactoe_web.User) (int,error)
-	GetUser(name string,password string) (tictactoe_web.User,error)
+	CreateUser(user tictactoe_web.User) (int, error)
+	GetUser(name string, password string) (tictactoe_web.User, error)
 }
 
 type Stats interface {
-	GetStats(user tictactoe_web.User) (tictactoe_web.UserStats,error)
+	GetStats(id int) (tictactoe_web.UserStats, error)
+	CreateStats(tictactoe_web.UserStats) error
+	UpdateStats(tictactoe_web.UserStats) (tictactoe_web.UserStats, error)
 }
 
 type Repository struct {
@@ -19,10 +21,9 @@ type Repository struct {
 	Stats
 }
 
-func NewRepository(db *sql.DB) *Repository{
+func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		Authorization : NewAuthRepository(db),
-		Stats : NewStatsRepository(db),
-
+		Authorization: NewAuthRepository(db),
+		Stats:         NewStatsRepository(db),
 	}
 }

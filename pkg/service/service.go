@@ -6,18 +6,25 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user tictactoe_web.User) (int,error)
+	CreateUser(user tictactoe_web.User) (int, error)
 	GenerateToken(name, password string) (string, error)
 	ParseToken(accessToken string) (int, error)
 }
 
+type Stats interface {
+	GetStats(int int) (tictactoe_web.UserStats, error)
+	UpdateStats(id int) (tictactoe_web.UserStats,error)
+	CreateStats(id int) error
+}
 
 type Service struct {
 	Authorization
+	Stats
 }
 
-func NewService(repository *repository.Repository) *Service{
+func NewService(repository *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repository),
+		Stats:         NewStatsService(repository),
 	}
 }

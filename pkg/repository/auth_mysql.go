@@ -36,14 +36,15 @@ func(r *AuthRepository) CreateUser(user tictactoe_web.User) (int,error){
 }
 
 func(r *AuthRepository) GetUser(name string, password string) (tictactoe_web.User,error){
-	var u tictactoe_web.User
+	var user tictactoe_web.User
 	query := fmt.Sprintf("Select * from %s where name=? and password=?",UserTable)
 	rows:= r.db.QueryRow(query,name,password)
 
-	err := rows.Scan(&u.ID, &u.Name, &u.Password, &u.Role)
+	err := rows.Scan(&user.ID, &user.Name, &user.Password, &user.Role)
 	if err != nil {
 		logrus.Errorf("could not get row from db: %s",err.Error())
+		return user,err
 	}
 
-	return u,nil
+	return user,nil
 }
