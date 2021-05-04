@@ -31,14 +31,14 @@ func(r *AuthRepository) CreateUser(user tictactoe_web.User) (int,error){
 		return 0,err
 	}
 	//create a record in stats table with id of user
-	query = fmt.Sprintf("Insert into %s (id,total,wins,draws,losses) values (0,0,0,0,0)", UserStatsTable)
-	_, err = r.db.Exec(query)
+	id,_ = result.LastInsertId()
+	query = fmt.Sprintf("Insert into %s (id,total,wins,draws,losses) values (?,0,0,0,0)", UserStatsTable)
+	_, err = r.db.Exec(query,int(id))
 	if err != nil{
 		logrus.Fatalf( "could execute insert query: %s",err.Error())
 		return 0,err
 	}
 
-	id,_ = result.LastInsertId()
 	return int(id),nil
 }
 
