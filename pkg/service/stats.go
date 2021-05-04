@@ -16,24 +16,6 @@ func NewStatsService(repo *repository.Repository) *StatsService {
 	}
 }
 
-func (s *StatsService) CreateStats(id int) error {
-	newStats := tictactoe_web.UserStats{
-		ID:         id,
-		TotalGames: 0,
-		Wins:       0,
-		Draws:      0,
-		Losses:     0,
-	}
-
-	err := s.repo.Stats.CreateStats(newStats)
-	if err != nil {
-		logrus.Errorf("statsService: could not create stats: %s", err.Error())
-		return err
-	}
-
-	return nil
-}
-
 func (s *StatsService) GetStats(id int) (tictactoe_web.UserStats, error) {
 	stats, err := s.repo.Stats.GetStats(id)
 	if err != nil {
@@ -41,29 +23,29 @@ func (s *StatsService) GetStats(id int) (tictactoe_web.UserStats, error) {
 		return tictactoe_web.UserStats{}, err
 	}
 
-	return stats,err
+	return stats, err
 }
 
-func (s *StatsService) UpdateStats(id int,result string) (tictactoe_web.UserStats, error) {
+func (s *StatsService) UpdateStats(id int, result string) (tictactoe_web.UserStats, error) {
 	stats, err := s.GetStats(id)
 	if err != nil {
 		logrus.Errorf("statsService: could not get stats: %s", err.Error())
 		return tictactoe_web.UserStats{}, err
 	}
 	stats.TotalGames++
-	if result == "win"{
+	if result == "win" {
 		stats.Wins++
 	}
-	if result == "draw"{
+	if result == "draw" {
 		stats.Draws++
 	}
-	if result == "lose"{
+	if result == "lose" {
 		stats.Losses++
 	}
 
 	newStats, err := s.repo.Stats.UpdateStats(stats)
-	if err != nil{
-		return tictactoe_web.UserStats{},err
+	if err != nil {
+		return tictactoe_web.UserStats{}, err
 	}
-	return newStats,err
+	return newStats, err
 }

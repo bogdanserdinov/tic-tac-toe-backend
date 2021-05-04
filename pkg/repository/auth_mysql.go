@@ -26,11 +26,18 @@ func(r *AuthRepository) CreateUser(user tictactoe_web.User) (int,error){
 	query := fmt.Sprintf("Insert into %s (name,password) values (?,?)",UserTable)
 
 	result, err := r.db.Exec(query, user.Name,user.Password)
-
 	if err != nil{
-		logrus.Fatalf( "could not get id of inserted row: %s",err.Error())
+		logrus.Fatalf( "could execute insert query: %s",err.Error())
 		return 0,err
 	}
+	//create a record in stats table with id of user
+	query = fmt.Sprintf("Insert into %s (id,total,wins,draws,losses) values (0,0,0,0,0)", UserStatsTable)
+	_, err = r.db.Exec(query)
+	if err != nil{
+		logrus.Fatalf( "could execute insert query: %s",err.Error())
+		return 0,err
+	}
+
 	id,_ = result.LastInsertId()
 	return int(id),nil
 }

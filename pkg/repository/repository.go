@@ -12,7 +12,6 @@ type Authorization interface {
 
 type Stats interface {
 	GetStats(id int) (tictactoe_web.UserStats, error)
-	CreateStats(tictactoe_web.UserStats) error
 	UpdateStats(tictactoe_web.UserStats) (tictactoe_web.UserStats, error)
 }
 

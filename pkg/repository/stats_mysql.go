@@ -18,19 +18,6 @@ func NewStatsRepository(db *sql.DB) *StatsRepository {
 	}
 }
 
-func (s *StatsRepository) CreateStats(stats tictactoe_web.UserStats) error {
-	//insert
-	if s.db == nil {
-		logrus.Fatalf("db = nil")
-		return errors.New("db = nil; could not open db")
-	}
-	query := fmt.Sprintf("Insert into %s (id,total,wins,draws,losses) values (?,?,?,?,?)", UserStatsTable)
-	_, err := s.db.Exec(query, stats.ID, stats.TotalGames, stats.Wins, stats.Draws, stats.Losses)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
 func (s *StatsRepository) GetStats(id int) (tictactoe_web.UserStats, error) {
 	//select
