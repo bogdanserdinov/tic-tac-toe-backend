@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"database/sql"
 	"github.com/bogdanserdinov/tic-tac-toe-web"
+	"github.com/jmoiron/sqlx"
 )
 
 type Authorization interface {
@@ -20,7 +20,7 @@ type Repository struct {
 	Stats
 }
 
-func NewRepository(db *sql.DB) *Repository {
+func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthRepository(db),
 		Stats:         NewStatsRepository(db),
